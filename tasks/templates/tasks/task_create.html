@@ -1,0 +1,9 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Создать задачу{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Создать задачу</h1>
+
+    {% include 'tasks/includes/task_form.html' with button_text='Создать' %}
+{% endblock %}
