@@ -1,6 +1,3 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -71,20 +68,3 @@ class TaskDeleteView(LoginRequiredMixin, UserTaskQuerySetMixin, DeleteView):
     template_name = 'tasks/task_delete.html'
     success_url = reverse_lazy('task_list')
     pk_url_kwarg = 'task_id'
-
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('task_list')
-    else:
-        form = UserCreationForm()
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'registration/register.html', context)
