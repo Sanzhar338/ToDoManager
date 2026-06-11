@@ -8,7 +8,7 @@ class UserRegisterForm(UserCreationForm):
         required=False,
         label='Email',
         widget=forms.EmailInput(attrs={
-            'class': 'form-control',
+            'class': 'field-control',
             'placeholder': 'Введите email',
         })
     )
@@ -19,7 +19,7 @@ class UserRegisterForm(UserCreationForm):
 
         widgets = {
             'username': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'field-control',
                 'placeholder': 'Введите имя пользователя',
             }),
         }
@@ -32,11 +32,11 @@ class UserRegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
 
         self.fields['password1'].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'field-control',
             'placeholder': 'Введите пароль',
         })
         self.fields['password2'].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'field-control',
             'placeholder': 'Повторите пароль',
         })
 

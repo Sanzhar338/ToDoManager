@@ -3,7 +3,14 @@
 {% block title %}Редактировать задачу{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Редактировать задачу</h1>
+    <section class="form-page">
+        <div class="page-heading page-heading--compact">
+            <div>
+                <p class="eyebrow">Изменение записи</p>
+                <h1>Редактировать задачу</h1>
+            </div>
+        </div>
 
-    {% include 'tasks/includes/task_form.html' with button_text='Сохранить' %}
+        {% include 'tasks/includes/task_form.html' with button_text='Сохранить' %}
+    </section>
 {% endblock %}

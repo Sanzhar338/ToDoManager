@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Task
 
 
@@ -9,16 +10,16 @@ class TaskForm(forms.ModelForm):
 
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'field-control',
                 'placeholder': 'Введите название задачи',
             }),
             'description': forms.Textarea(attrs={
-                'class': 'form-control',
+                'class': 'field-control',
                 'placeholder': 'Введите описание задачи',
                 'rows': 4,
             }),
             'is_completed': forms.CheckboxInput(attrs={
-                'class': 'form-check-input',
+                'class': 'checkbox-control',
             }),
         }
 

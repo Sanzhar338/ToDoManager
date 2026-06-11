@@ -3,28 +3,25 @@
 {% block title %}Удалить задачу{% endblock %}
 
 {% block content %}
-    <div class="card border-danger">
-        <div class="card-body">
-            <h1 class="card-title text-danger">
-                Удалить задачу?
-            </h1>
+    <section class="danger-panel">
+        <p class="eyebrow eyebrow--danger">Подтверждение</p>
+        <h1>Удалить задачу?</h1>
 
-            <p class="card-text">
-                Ты точно хочешь удалить задачу:
-                <strong>{{ task.title }}</strong>?
-            </p>
+        <p>
+            Вы точно хотите удалить задачу
+            <strong>{{ task.title }}</strong>?
+        </p>
 
-            <form method="post">
-                {% csrf_token %}
+        <form method="post" class="form-actions">
+            {% csrf_token %}
 
-                <button type="submit" class="btn btn-danger">
-                    Да, удалить
-                </button>
+            <button type="submit" class="action-link action-link--danger">
+                Да, удалить
+            </button>
 
-                <a href="{% url 'task_list' %}" class="btn btn-secondary">
-                    Отмена
-                </a>
-            </form>
-        </div>
-    </div>
+            <a href="{% url 'task_list' %}" class="action-link action-link--muted">
+                Отмена
+            </a>
+        </form>
+    </section>
 {% endblock %}
