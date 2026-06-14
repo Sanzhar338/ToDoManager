@@ -13,6 +13,9 @@ class TaskQuerySet(models.QuerySet):
     def active(self):
         return self.filter(is_completed=False)
 
+    def by_priority(self, priority):
+        return self.filter(priority__in=priority)
+
     def search(self, query):
         if not query:
             return self
@@ -31,8 +34,20 @@ class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     is_completed = models.BooleanField(default=False)
+
+    class Priority(models.TextChoices):
+        HIGH = "H", "p1"
+        MEDIUM = "M", "p2"
+        LOW = "L", "p3"
+
+    priority = models.CharField(
+        max_length=1,
+        choices=Priority.choices,
+        default=Priority.LOW
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
     objects = TaskQuerySet.as_manager()
 

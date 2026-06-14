@@ -1,0 +1,24 @@
+Watching for file changes with StatReloader
+Not Found: /
+[14/Jun/2026 16:47:54] "GET / HTTP/1.1" 404 2607
+[14/Jun/2026 16:47:54,949] - Broken pipe from ('127.0.0.1', 61631)
+[14/Jun/2026 16:48:19] "GET /tasks/create/ HTTP/1.1" 302 0
+[14/Jun/2026 16:48:19,660] - Broken pipe from ('127.0.0.1', 49670)
+Session data corrupted
+[14/Jun/2026 16:48:44] "GET /tasks/create/ HTTP/1.1" 302 0
+Session data corrupted
+[14/Jun/2026 16:48:44] "GET /accounts/login/?next=/tasks/create/ HTTP/1.1" 200 2674
+[14/Jun/2026 16:48:46] "GET /static/tasks/css/styles.css HTTP/1.1" 200 12218
+Session data corrupted
+[14/Jun/2026 16:48:58] "POST /accounts/login/?next=/tasks/create/ HTTP/1.1" 302 0
+[14/Jun/2026 16:48:59] "GET /tasks/create/ HTTP/1.1" 200 5896
+[14/Jun/2026 16:48:59] "GET /static/tasks/css/styles.css HTTP/1.1" 304 0
+[14/Jun/2026 16:49:15] "GET /tasks/ HTTP/1.1" 200 3973
+[14/Jun/2026 16:49:15] "GET /static/tasks/css/styles.css HTTP/1.1" 304 0
+[14/Jun/2026 16:49:17] "POST /accounts/logout/ HTTP/1.1" 302 0
+[14/Jun/2026 16:49:17] "GET /accounts/login/ HTTP/1.1" 200 2674
+[14/Jun/2026 16:49:31] "POST /accounts/login/ HTTP/1.1" 302 0
+[14/Jun/2026 16:49:31] "GET /tasks/ HTTP/1.1" 200 7148
+[14/Jun/2026 16:49:31] "GET /static/tasks/css/styles.css HTTP/1.1" 304 0
+[14/Jun/2026 16:49:35] "GET /tasks/create/ HTTP/1.1" 200 5910
+[14/Jun/2026 16:49:39] "GET /tasks/7/edit/ HTTP/1.1" 200 6007

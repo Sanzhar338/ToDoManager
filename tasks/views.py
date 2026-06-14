@@ -1,5 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from .models import Task
@@ -20,8 +22,19 @@ class TaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
         query = self.request.GET.get('q')
         status = self.request.GET.get('status')
         sort = self.request.GET.get('sort')
+        priority = set()
+        if self.request.GET.get('priority-h'):
+            priority.add(self.request.GET.get('priority-h'))
+        if self.request.GET.get('priority-m'):
+            priority.add(self.request.GET.get('priority-m'))
+        if self.request.GET.get('priority-l'):
+            priority.add(self.request.GET.get('priority-l'))
 
         tasks = tasks.search(query)
+
+        if priority:
+            tasks = tasks.by_priority(priority)
+
 
         if status == 'completed':
             tasks = tasks.completed()
@@ -43,8 +56,18 @@ class TaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
         context['query'] = self.request.GET.get('q')
         context['status'] = self.request.GET.get('status')
         context['sort'] = self.request.GET.get('sort')
+        context['priorities'] = [self.request.GET.get('priority-h'),
+                                 self.request.GET.get('priority-m'),
+                                 self.request.GET.get('priority-l')]
 
         return context
+
+@require_POST
+def toggle_task_status(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    task.is_completed = not task.is_completed
+    task.save()
+    return redirect('task_list')
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task

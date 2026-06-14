@@ -1,52 +1,82 @@
 <form method="post" class="form-panel">
     {% csrf_token %}
 
-    <div class="field-group">
-        <label for="{{ form.title.id_for_label }}" class="field-label">
-            {{ form.title.label }}
-        </label>
-        {{ form.title }}
+    {% for f in form %}
+        {% if f.name == 'priority' %}
+            <div class="field-group priority-field">
+                <span class="field-label">{{ f.label }}</span>
 
-        {% if form.title.errors %}
-            <div class="field-error">
-                {{ form.title.errors }}
+                <div class="priority-options" role="radiogroup" aria-label="{{ f.label }}">
+                    {% for option in f %}
+                        <label class="priority-option priority-option--{{ option.data.value|lower }}" for="{{ option.id_for_label }}">
+                            {{ option.tag }}
+
+                            <span class="priority-option__mark" aria-hidden="true"></span>
+
+                            <span class="priority-option__content">
+                                <span class="priority-option__title">{{ option.choice_label }}</span>
+
+                                {% if option.data.value == 'H' %}
+                                    <span class="priority-option__hint">Срочно</span>
+                                {% elif option.data.value == 'M' %}
+                                    <span class="priority-option__hint">Обычный темп</span>
+                                {% else %}
+                                    <span class="priority-option__hint">Можно позже</span>
+                                {% endif %}
+                            </span>
+                        </label>
+                    {% endfor %}
+                </div>
+
+                {% if f.errors %}
+                    <div class="field-error">
+                        {{ f.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% elif f.name == 'is_completed' %}
+            <div class="checkbox-row">
+                {{ f }}
+                <label for="{{ f.id_for_label }}">
+                    {{ f.label }}
+                </label>
+
+                {% if f.errors %}
+                    <div class="field-error">
+                        {{ f.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="field-group">
+                <label for="{{ f.id_for_label }}" class="field-label">
+                    {{ f.label }}
+                </label>
+                {{ f }}
+
+                {% if f.errors %}
+                    <div class="field-error">
+                        {{ f.errors }}
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
-    </div>
-
-    <div class="field-group">
-        <label for="{{ form.description.id_for_label }}" class="field-label">
-            {{ form.description.label }}
-        </label>
-        {{ form.description }}
-
-        {% if form.description.errors %}
-            <div class="field-error">
-                {{ form.description.errors }}
-            </div>
-        {% endif %}
-    </div>
-
-    <div class="checkbox-row">
-        {{ form.is_completed }}
-        <label for="{{ form.is_completed.id_for_label }}">
-            {{ form.is_completed.label }}
-        </label>
-
-        {% if form.is_completed.errors %}
-            <div class="field-error">
-                {{ form.is_completed.errors }}
-            </div>
-        {% endif %}
-    </div>
+    {% endfor %}
 
     <div class="form-actions">
         <button type="submit" class="action-link action-link--primary">
             {{ button_text }}
         </button>
 
+        {% if button_text == 'Сохранить' %}
+        <a class="action-link action-link--danger" href="{% url 'task_delete' task.id %}">
+            Удалить
+        </a>
+        {% endif %}
+
         <a href="{% url 'task_list' %}" class="action-link action-link--muted">
             Назад
         </a>
+
     </div>
 </form>

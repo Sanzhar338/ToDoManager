@@ -52,6 +52,48 @@
                 </select>
             </div>
 
+            <div class="field-group filter-priority-field">
+                <span class="field-label">Приоритет</span>
+
+                <div class="filter-priority-options" aria-label="Приоритет">
+                    <label class="filter-priority-choice filter-priority-choice--h" for="priority-h">
+                        <input
+                            type="checkbox"
+                            id="priority-h"
+                            name="priority-h"
+                            value="H"
+                            {% if 'H' in priorities %}checked{% endif %}
+                        >
+                        <span class="filter-priority-choice__dot" aria-hidden="true"></span>
+                        <span>p1</span>
+                    </label>
+
+                    <label class="filter-priority-choice filter-priority-choice--m" for="priority-m">
+                        <input
+                            type="checkbox"
+                            id="priority-m"
+                            name="priority-m"
+                            value="M"
+                            {% if 'M' in priorities %}checked{% endif %}
+                        >
+                        <span class="filter-priority-choice__dot" aria-hidden="true"></span>
+                        <span>p2</span>
+                    </label>
+
+                    <label class="filter-priority-choice filter-priority-choice--l" for="priority-l">
+                        <input
+                            type="checkbox"
+                            id="priority-l"
+                            name="priority-l"
+                            value="L"
+                            {% if 'L' in priorities %}checked{% endif %}
+                        >
+                        <span class="filter-priority-choice__dot" aria-hidden="true"></span>
+                        <span>p3</span>
+                    </label>
+                </div>
+            </div>
+
             <div class="filter-submit">
                 <button type="submit" class="action-link action-link--primary action-link--full">
                     Применить
@@ -59,7 +101,7 @@
             </div>
         </div>
 
-        <a href="{% url 'task_list' %}" class="text-link">
+        <a href="{% url 'task_list' %}" class="text-link filter-reset-link">
             Сбросить фильтры
         </a>
     </form>
@@ -71,6 +113,11 @@
                     <div class="task-main">
                         <div class="task-title-row">
                             <h2 class="task-title">{{ task.title }}</h2>
+
+                            <span class="priority-chip priority-chip--{{ task.priority|lower }}" title="Приоритет: {{ task.get_priority_display }}">
+                                <span class="priority-chip__icon" aria-hidden="true"></span>
+                                <span class="priority-chip__label">{{ task.get_priority_display }}</span>
+                            </span>
 
                             {% if task.is_completed %}
                                 <span class="status-chip status-chip--done">Выполнена</span>
@@ -87,13 +134,20 @@
                     </div>
 
                     <div class="task-actions">
+                        <form method="post" action="{% url 'toggle_status' task.id %}">
+                            {% csrf_token %}
+                                {% if not task.is_completed %}
+                                    <button type="submit" class="action-link action-link--primary action-link--full">
+                                    Выполнить
+                                    </button>
+                                {% endif %}
+                        </form>
+
                         <a class="action-link action-link--muted" href="{% url 'task_update' task.id %}">
                             Изменить
                         </a>
 
-                        <a class="action-link action-link--danger" href="{% url 'task_delete' task.id %}">
-                            Удалить
-                        </a>
+
                     </div>
                 </article>
             {% endfor %}
