@@ -2,15 +2,14 @@
 
 {% block title %}Список задач{% endblock %}
 
-{% block content  %}
+{% block content %}
     <section class="page-heading">
         <div>
-            <p class="eyebrow">Рабочая область</p>
-            <h1>Список задач</h1>
+            <h1>История выполненных задач</h1>
         </div>
     </section>
 
-    <form method="get" class="filter-panel">
+    <form method="get" class="filter-panel filter-panel--history">
         <div class="filter-grid">
             <div class="field-group">
                 <label for="q" class="field-label">Поиск</label>
@@ -22,19 +21,6 @@
                     placeholder="Название или описание"
                     value="{{ query|default:'' }}"
                 >
-            </div>
-
-            <div class="field-group">
-                <label for="status" class="field-label">Статус</label>
-                <select id="status" name="status" class="field-control">
-                    <option value="">Все задачи</option>
-                    <option value="active" {% if status == 'active' %}selected{% endif %}>
-                        Не выполнены
-                    </option>
-                    <option value="completed" {% if status == 'completed' %}selected{% endif %}>
-                        Выполнены
-                    </option>
-                </select>
             </div>
 
             <div class="field-group">
@@ -101,7 +87,7 @@
             </div>
         </div>
 
-        <a href="{% url 'task_list' %}" class="text-link filter-reset-link">
+        <a href="{% url 'task_history' %}" class="text-link filter-reset-link">
             Сбросить фильтры
         </a>
     </form>
@@ -133,24 +119,13 @@
                         {% endif %}
                     </div>
 
+                    {% if  task.is_completed_at > datatime_now %}
                     <div class="task-actions">
-                        <form method="post" action="{% url 'toggle_status' task.id %}">
-                            {% csrf_token %}
-                                {% if not task.is_completed %}
-                                    <button type="submit" class="action-link action-link--primary action-link--full">
-                                    Выполнить
-                                    </button>
-                                {% endif %}
-                        </form>
-
-                        {% if not task.is_completed_at or task.is_completed_at > datatime_now %}
-                            <a class="action-link action-link--muted" href="{% url 'task_update' task.id %}">
-                            Изменить
-                            </a>
-                        {% endif %}
-
-
+                        <a class="action-link action-link--muted" href="{% url 'task_update' task.id %}">
+                        Изменить
+                        </a>
                     </div>
+                    {% endif %}
                 </article>
             {% endfor %}
         </section>

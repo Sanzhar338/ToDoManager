@@ -34,6 +34,7 @@ class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     is_completed = models.BooleanField(default=False)
+    is_completed_at = models.DateTimeField(blank=True, null=True)
 
     class Priority(models.TextChoices):
         HIGH = "H", "p1"
@@ -47,6 +48,7 @@ class Task(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 
     objects = TaskQuerySet.as_manager()

@@ -1,8 +1,12 @@
+from datetime import timezone
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from psycopg.types import datetime
 
 from .models import Task
 from .forms import TaskForm
@@ -30,6 +34,9 @@ class TaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
         if self.request.GET.get('priority-l'):
             priority.add(self.request.GET.get('priority-l'))
 
+        tasks = tasks.filter(Q(is_completed_at__isnull=True) |
+                             Q(is_completed_at__gt=datetime.datetime.now()-datetime.timedelta(days=30)))
+
         tasks = tasks.search(query)
 
         if priority:
@@ -40,6 +47,7 @@ class TaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
             tasks = tasks.completed()
         elif status == 'active':
             tasks = tasks.active()
+
 
         if sort == 'oldest':
             tasks = tasks.order_by('created_at')
@@ -59,6 +67,7 @@ class TaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
         context['priorities'] = [self.request.GET.get('priority-h'),
                                  self.request.GET.get('priority-m'),
                                  self.request.GET.get('priority-l')]
+        context['datatime_now'] = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=7)
 
         return context
 
@@ -66,8 +75,55 @@ class TaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
 def toggle_task_status(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     task.is_completed = not task.is_completed
+    task.is_completed_at = datetime.datetime.now()
     task.save()
     return redirect('task_list')
+
+class CompletedTaskListView(LoginRequiredMixin, UserTaskQuerySetMixin, ListView):
+    model = Task
+    template_name = 'tasks/completed_task_list.html'
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        tasks = super().get_queryset()
+        tasks = tasks.filter(is_completed=True)
+
+        query = self.request.GET.get('q')
+        sort = self.request.GET.get('sort')
+        priority = set()
+        if self.request.GET.get('priority-h'):
+            priority.add(self.request.GET.get('priority-h'))
+        if self.request.GET.get('priority-m'):
+            priority.add(self.request.GET.get('priority-m'))
+        if self.request.GET.get('priority-l'):
+            priority.add(self.request.GET.get('priority-l'))
+
+
+        tasks = tasks.search(query)
+
+        if priority:
+            tasks = tasks.by_priority(priority)
+
+        if sort == 'oldest':
+            tasks = tasks.order_by('is_completed_at')
+        elif sort == 'title':
+            tasks = tasks.order_by('title')
+        else:
+            tasks = tasks.order_by('-is_completed_at')
+
+        return tasks
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['query'] = self.request.GET.get('q')
+        context['sort'] = self.request.GET.get('sort')
+        context['priorities'] = [self.request.GET.get('priority-h'),
+                                 self.request.GET.get('priority-m'),
+                                 self.request.GET.get('priority-l')]
+        context['datatime_now'] = datetime.datetime.now(timezone.utc)-datetime.timedelta(days=7)
+
+        return context
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
@@ -85,6 +141,14 @@ class TaskUpdateView(LoginRequiredMixin, UserTaskQuerySetMixin, UpdateView):
     template_name = 'tasks/task_update.html'
     success_url = reverse_lazy('task_list')
     pk_url_kwarg = 'task_id'
+
+    def form_valid(self, form):
+        task = form.instance
+        if not task.is_completed:
+            task.is_completed_at = None
+        return super().form_valid(form)
+
+
 
 class TaskDeleteView(LoginRequiredMixin, UserTaskQuerySetMixin, DeleteView):
     model = Task

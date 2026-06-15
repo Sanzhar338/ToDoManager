@@ -23,11 +23,15 @@
                     <span class="user-pill" title="{{ user.username }}">
                         {{ user.username }}
                     </span>
+
                 {% endif %}
             </div>
 
             <nav class="header-actions" aria-label="Навигация">
                 {% if user.is_authenticated %}
+                    <a class="action-link action-link--primary nav-action" href="{% url 'task_history' %}">
+                        история задач
+                    </a>
                     <a class="action-link action-link--primary nav-action" href="{% url 'task_create' %}">
                         Создать задачу
                     </a>
@@ -62,7 +66,7 @@
             </div>
         {% endif %}
 
-        {% block content %}
+        {% block content  %}
         {% endblock %}
     </main>
 </body>

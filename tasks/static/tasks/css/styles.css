@@ -225,6 +225,10 @@ button {
     align-items: end;
 }
 
+.filter-panel--history .filter-grid {
+    grid-template-columns: minmax(240px, 1.4fr) minmax(170px, 0.9fr) minmax(210px, 1fr) minmax(128px, 0.55fr);
+}
+
 .filter-submit {
     display: flex;
     align-self: end;
@@ -744,6 +748,10 @@ textarea.field-control {
         grid-template-columns: 1fr 1fr;
     }
 
+    .filter-panel--history .filter-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
     .filter-grid .field-group:first-child {
         grid-column: 1 / -1;
     }
@@ -788,6 +796,10 @@ textarea.field-control {
     }
 
     .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-panel--history .filter-grid {
         grid-template-columns: 1fr;
     }
 
